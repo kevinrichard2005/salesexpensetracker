@@ -18,7 +18,8 @@ from werkzeug.utils import secure_filename
 import uuid
 
 # FIXED: Set template folder to current directory for Render deployment
-app = Flask(__name__, template_folder='.', static_folder='static')
+# This line should be in your app.py
+app = Flask(__name__, template_folder='.', static_folder='static', static_url_path='/static')
 
 # Railway configuration
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', secrets.token_hex(32))
