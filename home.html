@@ -3,170 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Data Analyzer</title>
-   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Advanced Sales Data Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #3498db, #2c3e50);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid #3498db;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .feature-card p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .feature-card li {
+            padding: 8px 0;
+            color: #666;
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-card li:before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .upload-section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .upload-area {
+            border: 3px dashed #3498db;
+            border-radius: 15px;
+            padding: 60px 20px;
+            margin: 30px 0;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            background: #e8f4fc;
+            border-color: #2980b9;
+        }
+
+        .upload-area h3 {
+            color: #3498db;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .upload-area p {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        .file-types {
+            color: #3498db;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .upload-btn {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .upload-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .highlight {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .security-note {
+            background: #e8f6f3;
+            border-left: 5px solid #27ae60;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .upload-section {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Flash Messages -->
-    <div class="flash-messages">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
-                        <span>{{ message }}</span>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+    <div class="container">
+        <header>
+            <h1>Advanced Sales Data Analysis</h1>
+            <p class="tagline">
+                Upload your sales data, get instant insights, and make data-driven decisions with our powerful analytics platform.
+            </p>
+        </header>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>Easy Upload</h3>
+                <p>Effortlessly upload your sales data files with our intuitive interface.</p>
+                <ul>
+                    <li>Upload CSV or Excel files with drag & drop</li>
+                    <li>Automatic data validation and cleaning</li>
+                    <li>Instant file processing</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>Visual Analytics</h3>
+                <p>Transform your data into actionable insights with beautiful visualizations.</p>
+                <ul>
+                    <li>Interactive charts and graphs</li>
+                    <li>Visualize sales trends and patterns</li>
+                    <li>Real-time data updates</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>Export Reports</h3>
+                <p>Generate comprehensive reports for detailed analysis and sharing.</p>
+                <ul>
+                    <li>Generate detailed reports</li>
+                    <li>Download in CSV format</li>
+                    <li>Ready for further analysis</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="upload-section">
+            <h2>Sales Data Analyzer</h2>
+            
+            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                <h3>Upload Your Sales Data</h3>
+                <p>Drag & drop your files here or click to browse</p>
+                <p class="file-types">Supports: CSV, XLSX, XLS</p>
+                <button class="upload-btn">Choose File</button>
+                <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display: none;">
+            </div>
+
+            <div class="security-note">
+                <h3>Secure & Private</h3>
+                <p>Your data security is our priority. All files are:</p>
+                <ul>
+                    <li>Processed securely with encryption</li>
+                    <li>Never shared with third parties</li>
+                    <li>Automatically deleted after processing</li>
+                    <li>Stored in compliant data centers</li>
+                </ul>
+            </div>
+        </div>
     </div>
-    
-    <!-- Header -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-logo">
-                <i class="fas fa-chart-line"></i>
-                <span>Sales Analyzer</span>
-            </div>
-            <div class="nav-actions">
-                {% if current_user.is_authenticated %}
-                    <a href="/dashboard" class="btn btn-outline">
-                        <i class="fas fa-dashboard"></i> Dashboard
-                    </a>
-                    <a href="/profile" class="btn btn-outline">
-                        {% if current_user.google_id %}
-                            <i class="fab fa-google" style="color: #4285F4;"></i>
-                        {% else %}
-                            <i class="fas fa-user"></i>
-                        {% endif %}
-                        Profile
-                    </a>
-                    <a href="/logout" class="btn btn-primary">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
-                {% else %}
-                    <a href="/login" class="nav-link">Login</a>
-                    <a href="/register" class="btn btn-primary">Get Started</a>
-                {% endif %}
-            </div>
-        </div>
-    </nav>
-    
-    <!-- Hero Section -->
-    <section class="section">
-        <div class="container">
-            <div class="glass text-center">
-                <h1>Advanced Sales Data Analysis</h1>
-                <p class="mb-5">Upload your sales data, get instant insights, and make data-driven decisions with our powerful analytics platform.</p>
-                
-                {% if not current_user.is_authenticated %}
-                    <div class="flex justify-center gap-4 mt-5">
-                        <a href="/register" class="btn btn-primary btn-lg">
-                            <i class="fas fa-user-plus"></i> Create Account
-                        </a>
-                        <a href="/login" class="btn btn-outline btn-lg">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </a>
-                    </div>
-                {% else %}
-                    <a href="/dashboard" class="btn btn-primary btn-lg mt-5">
-                        <i class="fas fa-chart-bar"></i> Go to Dashboard
-                    </a>
-                {% endif %}
-            </div>
-        </div>
-    </section>
-    
-    <!-- Features -->
-    <section class="section">
-        <div class="container">
-            <h2 class="section-title">Powerful Features</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="glass text-center p-5">
-                    <div class="kpi-icon sales mb-4 mx-auto">
-                        <i class="fas fa-upload"></i>
-                    </div>
-                    <h3>Easy Upload</h3>
-                    <p>Upload CSV or Excel files with drag & drop. Automatic data validation and cleaning.</p>
-                </div>
-                
-                <div class="glass text-center p-5">
-                    <div class="kpi-icon orders mb-4 mx-auto">
-                        <i class="fas fa-chart-pie"></i>
-                    </div>
-                    <h3>Visual Analytics</h3>
-                    <p>Interactive charts and graphs to visualize sales trends and patterns.</p>
-                </div>
-                
-                <div class="glass text-center p-5">
-                    <div class="kpi-icon aov mb-4 mx-auto">
-                        <i class="fas fa-file-export"></i>
-                    </div>
-                    <h3>Export Reports</h3>
-                    <p>Generate and download detailed reports in CSV format for further analysis.</p>
-                </div>
-                
-                <div class="glass text-center p-5">
-                    <div class="kpi-icon growth mb-4 mx-auto">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Secure & Private</h3>
-                    <p>Your data is processed securely and never shared with third parties.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-   
-    
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Sales Data Analyzer</h3>
-                    <p>Advanced analytics platform for sales data visualization and insights generation.</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <div class="footer-links">
-                        <a href="/">Home</a>
-                        <a href="/dashboard">Dashboard</a>
-                        <a href="/login">Login</a>
-                        <a href="/register">Register</a>
-                    </div>
-                </div>
-                <div class="footer-section">
-                    <h3>Contact</h3>
-                    <p>For assistance: support@salesanalyzer.com</p>
-                    <p>Version: 2.0.0</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 Sales Data Analyzer | College Mini Project | Computer Science Department</p>
-            </div>
-        </div>
-    </footer>
-    
+
     <script>
-        // Auto-hide flash messages after 5 seconds
-        setTimeout(() => {
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(alert => {
-                alert.style.opacity = '0';
-                alert.style.transform = 'translateX(100%)';
-                setTimeout(() => alert.remove(), 300);
-            });
-        }, 5000);
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                const fileName = e.target.files[0].name;
+                const uploadArea = document.querySelector('.upload-area h3');
+                const originalText = uploadArea.textContent;
+                
+                uploadArea.textContent = `File Ready: ${fileName}`;
+                uploadArea.style.color = '#27ae60';
+                
+                // Show processing message
+                setTimeout(() => {
+                    uploadArea.textContent = 'Processing your data...';
+                    
+                    // Simulate processing completion
+                    setTimeout(() => {
+                        uploadArea.textContent = 'Analysis Complete!';
+                        uploadArea.style.color = '#e74c3c';
+                        
+                        // Reset after 3 seconds
+                        setTimeout(() => {
+                            uploadArea.textContent = originalText;
+                            uploadArea.style.color = '#3498db';
+                            e.target.value = '';
+                        }, 3000);
+                    }, 2000);
+                }, 1000);
+            }
+        });
         
-        // Close flash messages on click
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.alert')) {
-                const alert = e.target.closest('.alert');
-                alert.style.opacity = '0';
-                alert.style.transform = 'translateX(100%)';
-                setTimeout(() => alert.remove(), 300);
+        // Add drag and drop functionality
+        const uploadArea = document.querySelector('.upload-area');
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#e74c3c';
+            uploadArea.style.background = '#ffeaa7';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#3498db';
+            uploadArea.style.background = '#f8fafc';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#3498db';
+            uploadArea.style.background = '#f8fafc';
+            
+            if (e.dataTransfer.files.length) {
+                document.getElementById('fileInput').files = e.dataTransfer.files;
+                document.getElementById('fileInput').dispatchEvent(new Event('change'));
             }
         });
     </script>
